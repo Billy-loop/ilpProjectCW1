@@ -8,7 +8,6 @@ public class LngLatPairRequest {
         this.position1 = position1;
         this.position2 = position2;
     }
-
     public Position getPosition1() {
         return position1;
     }
