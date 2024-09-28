@@ -1,4 +1,4 @@
-package uk.ac.ed.inf.pizzadronz;
+package uk.ac.ed.inf.pizzadronz.model;
 
 public class LngLatPairRequest {
     private Position position1;
@@ -20,4 +20,17 @@ public class LngLatPairRequest {
     public void setPosition2(Position position2) {
         this.position2 = position2;
     }
+
+//    public boolean checkLngLatPair() {
+//        if(position1 == null || position2 == null) {
+//            return false;
+//        }
+//        if(!position1.isValidPosition()){
+//            return false;
+//        }
+//        if(!position2.isValidPosition()){
+//            return false;
+//        }
+//        return true;
+//    }
 }

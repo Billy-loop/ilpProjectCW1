@@ -1,13 +1,13 @@
-package uk.ac.ed.inf.pizzadronz;
+package uk.ac.ed.inf.pizzadronz.model;
 
 public class NextPositionRequest {
     private Position start;
     private double angle;
 
-    public NextPositionRequest(){
-        this.start = new Position();
-        this.angle = Double.POSITIVE_INFINITY;
-    }
+//    public NextPositionRequest(){
+//        this.start = new Position();
+//        this.angle = Double.POSITIVE_INFINITY;
+//    }
     public NextPositionRequest(Position start, double angle){
         this.start = start;
         this.angle = angle;
