@@ -11,6 +11,8 @@ import uk.ac.ed.inf.pizzadronz.model.NextPositionRequest;
 import uk.ac.ed.inf.pizzadronz.model.Position;
 import uk.ac.ed.inf.pizzadronz.model.isInRegionRequest;
 
+import java.util.List;
+
 
 @RestController
 public class Controller {
@@ -19,6 +21,7 @@ public class Controller {
     public String getUUid(){
         return "s" + "1234567";
     }
+
 
     @PostMapping("/distanceTo")
     public ResponseEntity<Double> distanceTo(@RequestBody LngLatPairRequest lnglat1){
@@ -40,6 +43,7 @@ public class Controller {
 
         return ResponseEntity.ok(distance);
     }
+
 
     @PostMapping("/isCloseTo")
     public ResponseEntity<Boolean> isCloseTo(@RequestBody LngLatPairRequest lnglat1){
@@ -63,6 +67,7 @@ public class Controller {
             return ResponseEntity.ok(false);
         }
     }
+
 
     @PostMapping("/nextPosition")
     public ResponseEntity<Position> nextPosition(@RequestBody NextPositionRequest nextPosition){
@@ -93,10 +98,46 @@ public class Controller {
 
        return ResponseEntity.ok(res);
     }
+
+
     @PostMapping("/isInRegion")
     public ResponseEntity<Boolean> isInRegion(@RequestBody isInRegionRequest request){
-        return ResponseEntity.ok(true);
+        if (request == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if(!isValidPosition(request.getPosition())){
+            return ResponseEntity.ok(true);
+        }
+
+        boolean inside = isInPolygon(request.getPosition(),request.getRegion().getVertices());
+        return ResponseEntity.ok(inside);
     }
+
+    public static boolean isInPolygon(Position position, List<Position> vertices) {
+        int intersects = 0;
+        for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
+
+            //Check whether y of target position in the range of line
+            boolean inRegion = (vertices.get(i).getLat() > position.getLat())
+                    != (vertices.get(j).getLat() > position.getLat());
+
+            //Line to right, check whether there is interaction. Xt <= (Xj - Xi)*(Yt - Yi)/(Yj - Yi)+Xi
+            boolean intersection = (position.getLng() <= (vertices.get(j).getLng() - vertices.get(i).getLng())
+                    * (position.getLat() - vertices.get(i).getLat()) / (vertices.get(j).getLat() - vertices.get(i).getLat())
+                    + vertices.get(i).getLng());
+
+            if (inRegion && intersection) {
+                intersects++;
+            }
+        }
+        return intersects % 2 == 1;  // odd count inside, even count outside
+    }
+
+
+
+
+
 
     public boolean isValidPosition( Position position){
         if(position.getLng() == 0.0 || position.getLat() == 0.0){
