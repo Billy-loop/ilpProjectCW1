@@ -106,6 +106,10 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
+        if(request.getRegion().getVertices().size() < 3){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         if(!isValidPosition(request.getPosition())){
             return ResponseEntity.ok(true);
         }
