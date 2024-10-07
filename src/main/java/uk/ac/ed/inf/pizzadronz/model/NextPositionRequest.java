@@ -8,7 +8,7 @@ public class NextPositionRequest {
 //        this.start = new Position();
 //        this.angle = Double.POSITIVE_INFINITY;
 //    }
-    public NextPositionRequest(Position start, double angle){
+    public NextPositionRequest(Position start, Double angle){
         this.start = start;
         this.angle = angle;
     }
@@ -17,7 +17,7 @@ public class NextPositionRequest {
         return this.start;
     }
 
-    public double getAngle(){
+    public Double getAngle(){
         return angle;
     }
 

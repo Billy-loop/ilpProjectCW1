@@ -18,8 +18,8 @@ import java.util.List;
 public class Controller {
 
     @GetMapping("/uuid")
-    public String getUUid(){
-        return "s" + "1234567";
+    public String uuid(){
+        return "s" + "2292976";
     }
 
 
@@ -80,7 +80,7 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(nextPosition.getAngle() == 0.0){
+        if(nextPosition.getAngle() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -144,7 +144,7 @@ public class Controller {
 
 
     public boolean isValidPosition( Position position){
-        if(position.getLng() == 0.0 || position.getLat() == 0.0){
+        if(position.getLng() == null  || position.getLat() == null){
             return false;
         }
         if(position.getLat() > 90 || position.getLat() < -90){

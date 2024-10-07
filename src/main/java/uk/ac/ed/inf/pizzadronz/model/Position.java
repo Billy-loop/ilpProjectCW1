@@ -10,24 +10,24 @@ public class Position {
 //        this.lat = Double.POSITIVE_INFINITY;
 //    }
 
-    public Position(double lng, double lat) {
+    public Position(Double lng, Double lat) {
         this.lng = lng;
         this.lat = lat;
     }
 
-    public double getLng() {
+    public Double getLng() {
         return lng;
     }
 
-    public void setLng(double lng) {
+    public void setLng(Double lng) {
         this.lng = lng;
     }
 
-    public double getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
