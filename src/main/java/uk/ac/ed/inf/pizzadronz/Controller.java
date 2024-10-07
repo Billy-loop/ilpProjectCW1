@@ -126,7 +126,17 @@ public class Controller {
 
     public static boolean isInPolygon(Position position, List<Position> vertices) {
         int intersects = 0;
-        for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
+//        for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
+        for (int i =0,j =1 ; i < vertices.size()-1; i++, j = i+1){
+
+            boolean inBorder = position.getLat() ==
+                    (vertices.get(j).getLat() - vertices.get(i).getLat())/
+                    (vertices.get(j).getLng() - vertices.get(i).getLng()) * (position.getLng() - vertices.get(i).getLng())
+                    + vertices.get(i).getLat();
+
+            if (inBorder) {
+                return true;
+            }
 
             //Check whether y of target position in the range of line
             boolean inRegion = (vertices.get(i).getLat() > position.getLat())
