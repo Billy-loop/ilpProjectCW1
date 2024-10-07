@@ -12,6 +12,7 @@ import uk.ac.ed.inf.pizzadronz.model.Position;
 import uk.ac.ed.inf.pizzadronz.model.isInRegionRequest;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @RestController
@@ -29,9 +30,9 @@ public class Controller {
         if (!checkLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        if (lnglat1 == null || lnglat1.getPosition1() == null || lnglat1.getPosition2() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+//        if (lnglat1 == null || lnglat1.getPosition1() == null || lnglat1.getPosition2() == null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//        }
 
         double lng1 = lnglat1.getPosition1().getLng();
         double lng2 = lnglat1.getPosition2().getLng();
@@ -48,8 +49,8 @@ public class Controller {
     @PostMapping("/isCloseTo")
     public ResponseEntity<Boolean> isCloseTo(@RequestBody LngLatPairRequest lnglat1){
 
-
-        if ( lnglat1 == null || !checkLngLatPair(lnglat1)) {
+        //If checkLngLat is true, the if below will not run, vice visa
+        if (!checkLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -84,11 +85,11 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if (nextPosition.getAngle() == 999){
-            return ResponseEntity.ok(nextPosition.getStart());
-        }
+//        if (nextPosition.getAngle() == 999){
+//            return ResponseEntity.ok(nextPosition.getStart());
+//        }
 
-        if(nextPosition.getAngle() >359 || nextPosition.getAngle() < 0){
+        if(nextPosition.getAngle() >360 || nextPosition.getAngle() < 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -102,16 +103,21 @@ public class Controller {
 
     @PostMapping("/isInRegion")
     public ResponseEntity<Boolean> isInRegion(@RequestBody isInRegionRequest request){
+
         if (request == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(request.getRegion().getVertices().size() < 3){
+        if(!checkVertices(request.getRegion().getVertices())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if(request.getRegion().getVertices().size() < 4){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         if(!isValidPosition(request.getPosition())){
-            return ResponseEntity.ok(true);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         boolean inside = isInPolygon(request.getPosition(),request.getRegion().getVertices());
@@ -156,18 +162,38 @@ public class Controller {
         return true;
     }
 
-        public boolean checkLngLatPair(LngLatPairRequest lnglat1 ) {
+    public boolean checkLngLatPair(LngLatPairRequest lnglat1 ) {
         if (lnglat1 == null){
             return false;
         }
         if(lnglat1.getPosition1() == null || lnglat1.getPosition2() == null) {
             return false;
         }
+        // IF isValidPosition is true, the if below will not run, vice visa
         if(!isValidPosition(lnglat1.getPosition1()) ||
                 !isValidPosition(lnglat1.getPosition2())) {
             return false;
         }
         return true;
     }
+
+    public boolean checkVertices(List<Position> vertices){
+
+        //check the position in vertices is valid.
+        for (int i = 0; i < vertices.size(); i++) {
+            if(!isValidPosition(vertices.get(i))){
+                return false;
+            }
+        }
+
+        //check whether this polygon is close
+        if (!Objects.equals(vertices.get(0).getLng(), vertices.get(vertices.size() - 1).getLng()) ||
+                !Objects.equals(vertices.get(0).getLat(), vertices.get(vertices.size() - 1).getLat())) {
+            return false;
+        }
+
+        return true;
+    }
+
 
 }
