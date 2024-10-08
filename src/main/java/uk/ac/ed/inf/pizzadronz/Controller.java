@@ -27,6 +27,10 @@ public class Controller {
     @PostMapping("/distanceTo")
     public ResponseEntity<Double> distanceTo(@RequestBody LngLatPairRequest lnglat1){
 
+        if(lnglat1 == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         if (!checkLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -48,6 +52,10 @@ public class Controller {
 
     @PostMapping("/isCloseTo")
     public ResponseEntity<Boolean> isCloseTo(@RequestBody LngLatPairRequest lnglat1){
+
+        if(lnglat1 == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
         //If checkLngLat is true, the if below will not run, vice visa
         if (!checkLngLatPair(lnglat1)) {
@@ -73,7 +81,7 @@ public class Controller {
     @PostMapping("/nextPosition")
     public ResponseEntity<Position> nextPosition(@RequestBody NextPositionRequest nextPosition){
 
-        if (nextPosition == null || nextPosition.getStart() == null) {
+        if (nextPosition == null ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -108,15 +116,19 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
+        if (request.getRegion() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if(!isValidPosition(request.getPosition())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         if(!checkVertices(request.getRegion().getVertices())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         if(request.getRegion().getVertices().size() < 4){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
-        if(!isValidPosition(request.getPosition())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -160,6 +172,11 @@ public class Controller {
 
 
     public boolean isValidPosition( Position position){
+
+        if(position == null){
+            return false;
+        }
+
         if(position.getLng() == null  || position.getLat() == null){
             return false;
         }
@@ -189,6 +206,9 @@ public class Controller {
 
     public boolean checkVertices(List<Position> vertices){
 
+        if (vertices == null){
+            return false;
+        }
         //check the position in vertices is valid.
         for (int i = 0; i < vertices.size(); i++) {
             if(!isValidPosition(vertices.get(i))){

@@ -6,8 +6,8 @@ public class Position {
     private double lat;
 
 //    public Position(){
-//        this.lng = Double.POSITIVE_INFINITY;
-//        this.lat = Double.POSITIVE_INFINITY;
+//        this.lng = null;
+//        this.lat = null;
 //    }
 
     public Position(Double lng, Double lat) {

@@ -2,7 +2,7 @@ package uk.ac.ed.inf.pizzadronz.model;
 
 public class NextPositionRequest {
     private Position start;
-    private double angle;
+    private Double angle;
 
 //    public NextPositionRequest(){
 //        this.start = new Position();
