@@ -2,8 +2,8 @@ package uk.ac.ed.inf.pizzadronz.model;
 
 public class Position {
 
-    private double lng;
-    private double lat;
+    private Double lng;
+    private Double lat;
 
 //    public Position(){
 //        this.lng = null;

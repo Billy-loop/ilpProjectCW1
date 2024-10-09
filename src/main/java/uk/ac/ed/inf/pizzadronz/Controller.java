@@ -27,13 +27,17 @@ public class Controller {
     @PostMapping("/distanceTo")
     public ResponseEntity<Double> distanceTo(@RequestBody LngLatPairRequest lnglat1){
 
-        if(lnglat1 == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+//        if(lnglat1 == null){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//        }
+
+        System.out.println(1);
 
         if (!checkLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
+        System.out.println(2);
 //        if (lnglat1 == null || lnglat1.getPosition1() == null || lnglat1.getPosition2() == null) {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 //        }
@@ -124,6 +128,10 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
+        if(request.getRegion().getName() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         if(!checkVertices(request.getRegion().getVertices())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -140,6 +148,8 @@ public class Controller {
         int intersects = 0;
 //        for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
         for (int i =0,j =1 ; i < vertices.size()-1; i++, j = i+1){
+
+
 
             boolean inBorder = position.getLat() ==
                     (vertices.get(j).getLat() - vertices.get(i).getLat())/
