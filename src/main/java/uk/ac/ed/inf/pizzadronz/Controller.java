@@ -149,19 +149,13 @@ public class Controller {
 //        for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
         for (int i =0,j =1 ; i < vertices.size()-1; i++, j = i+1){
 
-
-
-            boolean inBorder = position.getLat() ==
-                    (vertices.get(j).getLat() - vertices.get(i).getLat())/
-                    (vertices.get(j).getLng() - vertices.get(i).getLng()) * (position.getLng() - vertices.get(i).getLng())
-                    + vertices.get(i).getLat();
-
-            if (inBorder) {
-                return true;
+            // Check if the point lies on the border (using collinearity and boundary check)
+            if (isOnLine(position, vertices.get(i), vertices.get(j))) {
+                return true; // Point is on the border
             }
 
             //Check whether y of target position in the range of line
-            boolean inRegion = (vertices.get(i).getLat() > position.getLat())
+            boolean inRange = (vertices.get(i).getLat() > position.getLat())
                     != (vertices.get(j).getLat() > position.getLat());
 
             //Line to right, check whether there is interaction. Xt <= (Xj - Xi)*(Yt - Yi)/(Yj - Yi)+Xi
@@ -169,15 +163,31 @@ public class Controller {
                     * (position.getLat() - vertices.get(i).getLat()) / (vertices.get(j).getLat() - vertices.get(i).getLat())
                     + vertices.get(i).getLng());
 
-            if (inRegion && intersection) {
+            if (inRange && intersection) {
                 intersects++;
             }
         }
         return intersects % 2 == 1;  // odd count inside, even count outside
     }
 
+    public static boolean isOnLine(Position p, Position v1, Position v2) {
+        // Calculate the cross product (to check for collinearity)
+        double crossProduct = (p.getLat() - v1.getLat()) * (v2.getLng() - v1.getLng())
+                - (p.getLng() - v1.getLng()) * (v2.getLat() - v1.getLat());
 
+        // If crossProduct is not zero, the point is not collinear
+        if (crossProduct != 0) {
+            return false;
+        }
 
+        // Check if the point lies within the bounds of the line segment
+        boolean lngBounds = Math.min(v1.getLng(), v2.getLng()) <= p.getLng() &&
+                p.getLng() <= Math.max(v1.getLng(), v2.getLng());
+        boolean latBounds = Math.min(v1.getLat(), v2.getLat()) <= p.getLat() &&
+                p.getLat() <= Math.max(v1.getLat(), v2.getLat());
+
+        return lngBounds && latBounds;
+    }
 
 
 
