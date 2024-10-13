@@ -27,20 +27,9 @@ public class Controller {
     @PostMapping("/distanceTo")
     public ResponseEntity<Double> distanceTo(@RequestBody LngLatPairRequest lnglat1){
 
-//        if(lnglat1 == null){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        }
-
-        System.out.println(1);
-
         if (!checkLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
-        System.out.println(2);
-//        if (lnglat1 == null || lnglat1.getPosition1() == null || lnglat1.getPosition2() == null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        }
 
         double lng1 = lnglat1.getPosition1().getLng();
         double lng2 = lnglat1.getPosition2().getLng();
@@ -97,10 +86,6 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-//        if (nextPosition.getAngle() == 999){
-//            return ResponseEntity.ok(nextPosition.getStart());
-//        }
-
         if(nextPosition.getAngle() >360 || nextPosition.getAngle() < 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -140,11 +125,15 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
+        if(isOnStraightLine(request.getRegion().getVertices())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         boolean inside = isInPolygon(request.getPosition(),request.getRegion().getVertices());
         return ResponseEntity.ok(inside);
     }
 
-    public static boolean isInPolygon(Position position, List<Position> vertices) {
+    public boolean isInPolygon(Position position, List<Position> vertices) {
         int intersects = 0;
 //        for (int i = 0, j = vertices.size() - 1; i < vertices.size(); j = i++) {
         for (int i =0,j =1 ; i < vertices.size()-1; i++, j = i+1){
@@ -170,7 +159,8 @@ public class Controller {
         return intersects % 2 == 1;  // odd count inside, even count outside
     }
 
-    public static boolean isOnLine(Position p, Position v1, Position v2) {
+    // On border return ture, not return false
+    public boolean isOnLine(Position p, Position v1, Position v2) {
         // Calculate the cross product (to check for collinearity)
         double crossProduct = (p.getLat() - v1.getLat()) * (v2.getLng() - v1.getLng())
                 - (p.getLng() - v1.getLng()) * (v2.getLat() - v1.getLat());
@@ -190,7 +180,7 @@ public class Controller {
     }
 
 
-
+    // valid return ture, invalid return false.
     public boolean isValidPosition( Position position){
 
         if(position == null){
@@ -209,6 +199,7 @@ public class Controller {
         return true;
     }
 
+    // valid return true, invalid return false;
     public boolean checkLngLatPair(LngLatPairRequest lnglat1 ) {
         if (lnglat1 == null){
             return false;
@@ -217,13 +208,14 @@ public class Controller {
             return false;
         }
         // IF isValidPosition is true, the if below will not run, vice visa
-        if(!isValidPosition(lnglat1.getPosition1()) ||
+        if (!isValidPosition(lnglat1.getPosition1()) ||
                 !isValidPosition(lnglat1.getPosition2())) {
             return false;
         }
         return true;
     }
 
+    // Valid return true, invalid return false.
     public boolean checkVertices(List<Position> vertices){
 
         if (vertices == null){
@@ -235,15 +227,31 @@ public class Controller {
                 return false;
             }
         }
-
         //check whether this polygon is close
         if (!Objects.equals(vertices.get(0).getLng(), vertices.get(vertices.size() - 1).getLng()) ||
                 !Objects.equals(vertices.get(0).getLat(), vertices.get(vertices.size() - 1).getLat())) {
             return false;
         }
-
         return true;
     }
 
+    public boolean isOnStraightLine(List<Position> vertices) {
+        double x1 = vertices.get(0).getLng();
+        double y1 = vertices.get(0).getLat();
+        double x2 = vertices.get(1).getLng();
+        double y2 = vertices.get(1).getLat();
+
+        for (int i = 2; i < vertices.size(); i++) {
+            double x3 = vertices.get(i).getLng();
+            double y3 = vertices.get(i).getLat();
+
+            boolean notSameGrad = (((x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1))  != 0);
+
+            if (notSameGrad) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
