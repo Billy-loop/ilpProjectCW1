@@ -1,0 +1,50 @@
+package uk.ac.ed.inf.pizzadronz.model;
+
+import java.util.ArrayList;
+
+public class Order {
+    private int orderNo;
+    private String orderDate;
+    private int priceTotalInPence;
+    private ArrayList<Pizza> pizzasInOrder;
+    private cardInfo creditCardInformation;
+
+    public Order(int orderNo, String orderDate, int priceTotalInPence,
+                 ArrayList<String> pizzasInOrder, cardInfo creditCardInformation) {
+        this.orderNo = orderNo;
+        this.orderDate = orderDate;
+        this.priceTotalInPence = priceTotalInPence;
+        this.pizzasInOrder = pizzasInOrder;
+        this.creditCardInformation = creditCardInformation;
+    }
+    public int getOrderNo() {
+        return orderNo;
+    }
+    public void setOrderNo(int orderNo) {
+        this.orderNo = orderNo;
+    }
+    public String getOrderDate() {
+        return orderDate;
+    }
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
+    }
+    public int getPriceTotalInPence() {
+        return priceTotalInPence;
+    }
+    public void setPriceTotalInPence(int priceTotalInPence) {
+        this.priceTotalInPence = priceTotalInPence;
+    }
+    public ArrayList<Pizza> getPizzasInOrder() {
+        return pizzasInOrder;
+    }
+    public void setPizzasInOrder(ArrayList<Pizza> pizzasInOrder) {
+        this.pizzasInOrder = pizzasInOrder;
+    }
+    public cardInfo getCreditCardInformation() {
+        return creditCardInformation;
+    }
+    public void setCreditCardInformation(cardInfo creditCardInformation) {
+        this.creditCardInformation = creditCardInformation;
+    }
+}
