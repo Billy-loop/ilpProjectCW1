@@ -2,11 +2,11 @@ package uk.ac.ed.inf.pizzadronz.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ed.inf.pizzadronz.model.*;
-
 import java.util.ArrayList;
 
-
+@RestController
 public class ValidateOrderController {
     @PostMapping("/validateOrder")
     public ResponseEntity<Boolean>validateOrder(Order order){
@@ -14,7 +14,7 @@ public class ValidateOrderController {
         String orderDate = order.getOrderDate();
         int priceTotalInPence = order.getPriceTotalInPence();
         ArrayList<Pizza> pizzasInOrder = order.getPizzasInOrder();
-        cardInfo creditCardInformation = order.getCreditCardInformation();
+        CardInfo creditCardInformation = order.getCreditCardInformation();
 
         return ResponseEntity.ok(true);
     }

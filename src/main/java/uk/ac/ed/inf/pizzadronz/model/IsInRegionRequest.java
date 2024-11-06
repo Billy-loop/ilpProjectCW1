@@ -1,10 +1,10 @@
 package uk.ac.ed.inf.pizzadronz.model;
 
-public class isInRegionRequest {
+public class IsInRegionRequest {
     private Position position;
     private Region region;
 
-    public isInRegionRequest(Position position, Region region) {
+    public IsInRegionRequest(Position position, Region region) {
         this.position = position;
         this.region = region;
     }

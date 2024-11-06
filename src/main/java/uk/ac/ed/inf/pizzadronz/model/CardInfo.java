@@ -1,11 +1,11 @@
 package uk.ac.ed.inf.pizzadronz.model;
 
-public class cardInfo {
+public class CardInfo {
     private int creditCardNumber;
     private String creditCardExpiry;
     private int cvv;
 
-    public cardInfo(int creditCardNumber, String creditCardExpiry, int cvv) {
+    public CardInfo(int creditCardNumber, String creditCardExpiry, int cvv) {
         this.creditCardNumber = creditCardNumber;
         this.creditCardExpiry = creditCardExpiry;
         this.cvv = cvv;

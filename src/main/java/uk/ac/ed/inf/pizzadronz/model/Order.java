@@ -7,10 +7,10 @@ public class Order {
     private String orderDate;
     private int priceTotalInPence;
     private ArrayList<Pizza> pizzasInOrder;
-    private cardInfo creditCardInformation;
+    private CardInfo creditCardInformation;
 
     public Order(int orderNo, String orderDate, int priceTotalInPence,
-                 ArrayList<String> pizzasInOrder, cardInfo creditCardInformation) {
+                 ArrayList<Pizza> pizzasInOrder, CardInfo creditCardInformation) {
         this.orderNo = orderNo;
         this.orderDate = orderDate;
         this.priceTotalInPence = priceTotalInPence;
@@ -41,10 +41,10 @@ public class Order {
     public void setPizzasInOrder(ArrayList<Pizza> pizzasInOrder) {
         this.pizzasInOrder = pizzasInOrder;
     }
-    public cardInfo getCreditCardInformation() {
+    public CardInfo getCreditCardInformation() {
         return creditCardInformation;
     }
-    public void setCreditCardInformation(cardInfo creditCardInformation) {
+    public void setCreditCardInformation(CardInfo creditCardInformation) {
         this.creditCardInformation = creditCardInformation;
     }
 }
