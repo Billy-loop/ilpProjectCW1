@@ -1,20 +1,20 @@
 package uk.ac.ed.inf.pizzadronz.model;
 
 public class CardInfo {
-    private int creditCardNumber;
+    private String creditCardNumber;
     private String creditCardExpiry;
-    private int cvv;
+    private String cvv;
 
-    public CardInfo(int creditCardNumber, String creditCardExpiry, int cvv) {
+    public CardInfo(String creditCardNumber, String creditCardExpiry, String cvv) {
         this.creditCardNumber = creditCardNumber;
         this.creditCardExpiry = creditCardExpiry;
         this.cvv = cvv;
     }
 
-    public int getCreditCardNumber() {
+    public String getCreditCardNumber() {
         return creditCardNumber;
     }
-    public void setCreditCardNumber(int creditCardNumber) {
+    public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
     }
     public String getCreditCardExpiry() {
@@ -23,10 +23,10 @@ public class CardInfo {
     public void setCreditCardExpiry(String creditCardExpiry) {
         this.creditCardExpiry = creditCardExpiry;
     }
-    public int getCvv() {
+    public String getCvv() {
         return cvv;
     }
-    public void setCvv(int cvv) {
+    public void setCvv(String cvv) {
         this.cvv = cvv;
     }
 }

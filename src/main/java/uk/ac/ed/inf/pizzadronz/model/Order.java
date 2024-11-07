@@ -3,13 +3,13 @@ package uk.ac.ed.inf.pizzadronz.model;
 import java.util.ArrayList;
 
 public class Order {
-    private int orderNo;
+    private String orderNo;
     private String orderDate;
     private int priceTotalInPence;
     private ArrayList<Pizza> pizzasInOrder;
     private CardInfo creditCardInformation;
 
-    public Order(int orderNo, String orderDate, int priceTotalInPence,
+    public Order(String orderNo, String orderDate, int priceTotalInPence,
                  ArrayList<Pizza> pizzasInOrder, CardInfo creditCardInformation) {
         this.orderNo = orderNo;
         this.orderDate = orderDate;
@@ -17,10 +17,10 @@ public class Order {
         this.pizzasInOrder = pizzasInOrder;
         this.creditCardInformation = creditCardInformation;
     }
-    public int getOrderNo() {
+    public String getOrderNo() {
         return orderNo;
     }
-    public void setOrderNo(int orderNo) {
+    public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
     public String getOrderDate() {
