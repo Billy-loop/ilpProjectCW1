@@ -4,12 +4,11 @@ import uk.ac.ed.inf.pizzadronz.model.Pizza;
 import uk.ac.ed.inf.pizzadronz.model.Position;
 import uk.ac.ed.inf.pizzadronz.model.Restaurant;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-public class CommonFunction {
+public class SemanticChecker {
 
     public static boolean checkLngLatPair(LngLatPairRequest lnglat1 ) {
         if (lnglat1 == null){
@@ -101,17 +100,5 @@ public class CommonFunction {
         }
         return true;
     }
-
-    public static Restaurant getRestaurant(List<Pizza> pizzasInOrder, List<Restaurant> restaurants) {
-        String restaurantCode = pizzasInOrder.get(0).getName().split(":")[0].trim();
-        for (Restaurant restaurant : restaurants) {
-            String code = restaurant.getMenu().get(0).getName().split(":")[0].trim();
-            if(code.equals(restaurantCode)) {
-                return restaurant;
-            }
-        }
-        return null;
-    }
-
 
 }

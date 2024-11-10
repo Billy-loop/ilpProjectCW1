@@ -18,22 +18,25 @@ public class IsCloseToController {
         }
 
         //If checkLngLat is true, the if below will not run, vice visa
-        if (!CommonFunction.checkLngLatPair(lnglat1)) {
+        if (!SemanticChecker.checkLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        double lng1 = lnglat1.getPosition1().getLng();
-        double lng2 = lnglat1.getPosition2().getLng();
+        boolean isCloseTo = ImplementUtil.isCloseTo(lnglat1);
+        return ResponseEntity.ok(isCloseTo);
 
-        double lat1 = lnglat1.getPosition1().getLat();
-        double lat2 = lnglat1.getPosition2().getLat();
-
-        double distance = Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2));
-
-        if (distance < 0.00015) {
-            return ResponseEntity.ok(true);
-        }else{
-            return ResponseEntity.ok(false);
-        }
+//        double lng1 = lnglat1.getPosition1().getLng();
+//        double lng2 = lnglat1.getPosition2().getLng();
+//
+//        double lat1 = lnglat1.getPosition1().getLat();
+//        double lat2 = lnglat1.getPosition2().getLat();
+//
+//        double distance = Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2));
+//
+//        if (distance < 0.00015) {
+//            return ResponseEntity.ok(true);
+//        }else{
+//            return ResponseEntity.ok(false);
+//        }
     }
 }

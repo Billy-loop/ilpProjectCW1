@@ -18,7 +18,7 @@ public class NextPositionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(!CommonFunction.isValidPosition(nextPosition.getStart())){
+        if(!SemanticChecker.isValidPosition(nextPosition.getStart())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -29,11 +29,11 @@ public class NextPositionController {
         if(nextPosition.getAngle() >360 || nextPosition.getAngle() < 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+        Position res = ImplementUtil.nextPosition(nextPosition);
 
-        double radian = Math.toRadians(nextPosition.getAngle());
-        Position res = new Position(nextPosition.getStart().getLng()+Math.cos(radian)*0.00015,
-                nextPosition.getStart().getLat()+Math.sin(radian)*0.00015);
-
+//        double radian = Math.toRadians(nextPosition.getAngle());
+//        Position res = new Position(nextPosition.getStart().getLng()+Math.cos(radian)*0.00015,
+//                nextPosition.getStart().getLat()+Math.sin(radian)*0.00015);
         return ResponseEntity.ok(res);
     }
 }

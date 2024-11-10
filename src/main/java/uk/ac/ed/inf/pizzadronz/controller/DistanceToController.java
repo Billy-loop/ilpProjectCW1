@@ -13,18 +13,20 @@ public class DistanceToController {
     @PostMapping("/distanceTo")
     public ResponseEntity<Double> distanceTo(@RequestBody LngLatPairRequest lnglat1){
 
-        if (!CommonFunction.checkLngLatPair(lnglat1)) {
+        if (!SemanticChecker.checkLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        double lng1 = lnglat1.getPosition1().getLng();
-        double lng2 = lnglat1.getPosition2().getLng();
-
-        double lat1 = lnglat1.getPosition1().getLat();
-        double lat2 = lnglat1.getPosition2().getLat();
-
-        double distance = Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2));
-
+        double distance = ImplementUtil.distanceTo(lnglat1);
         return ResponseEntity.ok(distance);
+
+//        double lng1 = lnglat1.getPosition1().getLng();
+//        double lng2 = lnglat1.getPosition2().getLng();
+//
+//        double lat1 = lnglat1.getPosition1().getLat();
+//        double lat2 = lnglat1.getPosition2().getLat();
+//
+//        double distance = Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2));
+
     }
 }
