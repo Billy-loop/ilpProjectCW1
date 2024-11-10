@@ -78,7 +78,9 @@ public class ImplementUtil {
 
 
     //Get restaurant from website
-    public static Restaurant getRestaurant(List<Pizza> pizzasInOrder, List<Restaurant> restaurants) {
+    public static Restaurant getRestaurant(Order order) {
+        List<Pizza> pizzasInOrder = order.getPizzasInOrder();
+        List<Restaurant> restaurants = DataRetrive.getRestaurants();
         String restaurantCode = pizzasInOrder.get(0).getName().split(":")[0].trim();
         for (Restaurant restaurant : restaurants) {
             String code = restaurant.getMenu().get(0).getName().split(":")[0].trim();
@@ -98,7 +100,7 @@ public class ImplementUtil {
         CardInfo creditCardInformation = order.getCreditCardInformation();
 
         //Find the Restaurant
-        Restaurant restaurant = ImplementUtil.getRestaurant(pizzasInOrder, DataRetrive.getRestaurants());
+        Restaurant restaurant = ImplementUtil.getRestaurant(order);
 
         if(!CheckOrderUtil.isValidDate(orderDate)){
             order.setOrderStatus(OrderStatus.INVALID);
