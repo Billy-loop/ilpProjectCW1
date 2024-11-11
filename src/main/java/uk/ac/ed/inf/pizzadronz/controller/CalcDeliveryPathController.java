@@ -1,6 +1,5 @@
 package uk.ac.ed.inf.pizzadronz.controller;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +9,6 @@ import uk.ac.ed.inf.pizzadronz.constant.OrderStatus;
 import uk.ac.ed.inf.pizzadronz.model.*;
 import uk.ac.ed.inf.pizzadronz.service.DataRetrive;
 import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,18 +21,13 @@ public class CalcDeliveryPathController {
             180.0, 202.5, 225.0, 247.5, 270.0, 292.5, 315.0, 337.5
     ));
 
-//    private static final double[] COMPASS_DIRECTIONS = {
-//            0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5,
-//            180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5
-//    };
-
     public static final Position appletonTower = new Position(-3.186874, 55.944494);
 
     public static final List<Region> noFlyZones = DataRetrive.getNoFlyZone();
 
-    private static boolean InCentreArea = false;
-
     private static Region centreArea = DataRetrive.getCentralArea();
+
+
 
     @PostMapping("/calcDeliveryPath")
     public ResponseEntity <List<Position>> calcDeliveryPath(@RequestBody Order order){
@@ -46,37 +39,50 @@ public class CalcDeliveryPathController {
         Position curLoc = restaurant.getLocation();
 
         List<Position> deliveryPath = new ArrayList<Position>();
+        List<Position> reachPoint = new ArrayList<>();
+        boolean InCentreArea = false;
+
         deliveryPath.add(curLoc);
+        reachPoint.add(curLoc);
 
         Position predictLoc;
-        List <Double> direction = COMPASS_DIRECTIONS;
+        List <Double> direction = new ArrayList<>(Arrays.asList(
+                0.0, 22.5, 45.0, 67.5, 90.0, 112.5, 135.0, 157.5,
+                180.0, 202.5, 225.0, 247.5, 270.0, 292.5, 315.0, 337.5
+        ));
 
         LngLatPairRequest curPair = new LngLatPairRequest(curLoc, appletonTower);
+        System.out.println(1);
         while (!ImplementUtil.isCloseTo(curPair)){
-            double deltaY = curPair.getPosition1().getLat() - curPair.getPosition2().getLat();
-            double deltaX = curPair.getPosition1().getLng() - curPair.getPosition2().getLng();
+
+            double deltaY = curPair.getPosition2().getLat() - curPair.getPosition1().getLat();
+            double deltaX = curPair.getPosition2().getLng() - curPair.getPosition1().getLng();
             double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
             double nextAngle = findClosestDirection(angle, COMPASS_DIRECTIONS);
 
-            predictLoc = ImplementUtil.nextPosition(new NextPositionRequest(curLoc, nextAngle));
 
+            predictLoc = ImplementUtil.nextPosition(new NextPositionRequest(curLoc, nextAngle));
             //NextPosition in nonFlyZone, or in centre area but leave
-            while (isInNonFlyZone(predictLoc) || (InCentreArea && leaveCentreArea(predictLoc))) {
-//                List <Double> restAngle = COMPASS_DIRECTIONS;
-//                restAngle.
+            while ((isInNonFlyZone(predictLoc) || (InCentreArea && leaveCentreArea(predictLoc))) || reachPoint.contains(predictLoc)) {
                 direction.remove(nextAngle);
                 nextAngle = findClosestDirection(angle, direction);
                 predictLoc = ImplementUtil.nextPosition(new NextPositionRequest(curLoc, nextAngle));
             }
 
             curLoc = predictLoc;
-
+            direction = new ArrayList<>(Arrays.asList(
+                    0.0, 22.5, 45.0, 67.5, 90.0, 112.5, 135.0, 157.5,
+                    180.0, 202.5, 225.0, 247.5, 270.0, 292.5, 315.0, 337.5
+            ));
             if(ImplementUtil.isInPolygon(curLoc, centreArea.getVertices())){
                 InCentreArea = true;
             }
 
             deliveryPath.add(curLoc);
-            curPair = new LngLatPairRequest(curLoc, appletonTower);
+            reachPoint.add(curLoc);
+            curPair.setPosition1(curLoc);
+            System.out.printf("Current lng: %f current lat: %f ; Target lng: %f Target lat: %f\n", curPair.getPosition1().getLng(), curPair.getPosition1().getLat(),
+                    curPair.getPosition2().getLng(), curPair.getPosition2().getLat());
 
         }
 
@@ -105,7 +111,7 @@ public class CalcDeliveryPathController {
             }
         }
         // Return the name of the closest direction
-        return COMPASS_DIRECTIONS.get(closestIndex);
+        return directions.get(closestIndex);
     }
 
     public static boolean isInNonFlyZone(Position position) {
