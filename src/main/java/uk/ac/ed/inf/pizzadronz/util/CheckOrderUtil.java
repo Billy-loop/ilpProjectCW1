@@ -82,7 +82,7 @@ public class CheckOrderUtil {
         List<Pizza> menu = restaurant.getMenu();
         for (Pizza pizza : pizzasInOrder) {
             for (Pizza pizzaMenu : menu) {
-                if (pizza.equals(pizzaMenu)) {
+                if (pizzaMenu.getName().equals(pizza.getName()) && pizzaMenu.getPriceInPence() == pizza.getPriceInPence()) {
                     return true;
                 }
             }

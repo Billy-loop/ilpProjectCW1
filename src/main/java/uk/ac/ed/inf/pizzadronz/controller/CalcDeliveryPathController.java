@@ -5,19 +5,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ed.inf.pizzadronz.constant.OrderStatus;
 import uk.ac.ed.inf.pizzadronz.model.*;
 import uk.ac.ed.inf.pizzadronz.service.DataRetrive;
 import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@RestController
 public class CalcDeliveryPathController {
-    private static final double[] COMPASS_DIRECTIONS = {
-            0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5,
-            180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5
-    };
+
+    private static final List<Double> COMPASS_DIRECTIONS = new ArrayList<>(Arrays.asList(
+            0.0, 22.5, 45.0, 67.5, 90.0, 112.5, 135.0, 157.5,
+            180.0, 202.5, 225.0, 247.5, 270.0, 292.5, 315.0, 337.5
+    ));
+
+//    private static final double[] COMPASS_DIRECTIONS = {
+//            0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5,
+//            180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5
+//    };
 
     public static final Position appletonTower = new Position(-3.186874, 55.944494);
 
@@ -27,7 +36,7 @@ public class CalcDeliveryPathController {
 
     private static Region centreArea = DataRetrive.getCentralArea();
 
-    @PostMapping("calcDeliveryPath")
+    @PostMapping("/calcDeliveryPath")
     public ResponseEntity <List<Position>> calcDeliveryPath(@RequestBody Order order){
         Order validOrder = ImplementUtil.validateOrder(order);
         if(validOrder.getOrderStatus() == OrderStatus.INVALID){
@@ -39,20 +48,25 @@ public class CalcDeliveryPathController {
         List<Position> deliveryPath = new ArrayList<Position>();
         deliveryPath.add(curLoc);
 
-        Position predictLoc = curLoc;
+        Position predictLoc;
+        List <Double> direction = COMPASS_DIRECTIONS;
 
         LngLatPairRequest curPair = new LngLatPairRequest(curLoc, appletonTower);
         while (!ImplementUtil.isCloseTo(curPair)){
             double deltaY = curPair.getPosition1().getLat() - curPair.getPosition2().getLat();
             double deltaX = curPair.getPosition1().getLng() - curPair.getPosition2().getLng();
             double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-            double nextAngle = findClosestDirection(angle);
+            double nextAngle = findClosestDirection(angle, COMPASS_DIRECTIONS);
 
             predictLoc = ImplementUtil.nextPosition(new NextPositionRequest(curLoc, nextAngle));
 
             //NextPosition in nonFlyZone, or in centre area but leave
-            if (isInNonFlyZone(predictLoc) || (InCentreArea && leaveCentreArea(predictLoc))) {
-                deliveryPath.add(curLoc);
+            while (isInNonFlyZone(predictLoc) || (InCentreArea && leaveCentreArea(predictLoc))) {
+//                List <Double> restAngle = COMPASS_DIRECTIONS;
+//                restAngle.
+                direction.remove(nextAngle);
+                nextAngle = findClosestDirection(angle, direction);
+                predictLoc = ImplementUtil.nextPosition(new NextPositionRequest(curLoc, nextAngle));
             }
 
             curLoc = predictLoc;
@@ -70,7 +84,7 @@ public class CalcDeliveryPathController {
     }
 
     // Method to calculate the closest compass direction
-    public static double findClosestDirection(double angle) {
+    public static double findClosestDirection(double angle, List <Double> directions) {
         // Normalize angle to range [0, 360)
         if (angle < 0) {
             angle += 360;
@@ -80,8 +94,8 @@ public class CalcDeliveryPathController {
         int closestIndex = -1;
 
         // Find the closest compass direction
-        for (int i = 0; i < COMPASS_DIRECTIONS.length; i++) {
-            double difference = Math.abs(angle - COMPASS_DIRECTIONS[i]);
+        for (int i = 0; i < directions.size(); i++) {
+            double difference = Math.abs(angle - directions.get(i));
             if (difference > 180) {
                 difference = 360 - difference;
             }
@@ -91,7 +105,7 @@ public class CalcDeliveryPathController {
             }
         }
         // Return the name of the closest direction
-        return COMPASS_DIRECTIONS[closestIndex];
+        return COMPASS_DIRECTIONS.get(closestIndex);
     }
 
     public static boolean isInNonFlyZone(Position position) {

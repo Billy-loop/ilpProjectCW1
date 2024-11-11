@@ -100,7 +100,8 @@ public class ImplementUtil {
         CardInfo creditCardInformation = order.getCreditCardInformation();
 
         //Find the Restaurant
-        Restaurant restaurant = ImplementUtil.getRestaurant(order);
+        Restaurant restaurant = getRestaurant(order);
+        System.out.println(restaurant.getName());
 
         if(!CheckOrderUtil.isValidDate(orderDate)){
             order.setOrderStatus(OrderStatus.INVALID);
