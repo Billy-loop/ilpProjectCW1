@@ -13,20 +13,22 @@ public class CheckOrderUtil {
         return orderDate != null && !orderDate.isBefore(LocalDate.now());
     }
 
-    public static boolean isValidExpiryDate(String creditCardExpiry){
-        return creditCardExpiry != null && creditCardExpiry.matches("(0[1-9]|1[0-2])/\\d{2}");
+    public static boolean isValidExpiryDate(String creditCardExpiry, LocalDate orderDate){
+        // Get the date of expiry date
+        //String expiryDate = order.getCreditCardInformation().getCreditCardExpiry();
+        String[] parts = creditCardExpiry.split("/");
+        int month = Integer.parseInt(parts[0]);
+        int year = Integer.parseInt(parts[1]) + 2000;
+        YearMonth cardExpiry = YearMonth.of(year, month);
 
-//        if(creditCardExpiry != null && creditCardExpiry.matches("(0[1-9]|1[0-2])/\\d{2}")){
-//            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/yy");
-//            YearMonth yearMonth = YearMonth.parse(creditCardExpiry, inputFormatter);
-//            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
-//
-//            String outputDate = yearMonth.format(outputFormatter);
-//
-//
-//            return true;
-//        }
-//        return false;
+        // Get the date of order date
+        String[] orderDateParts = orderDate.toString().split("-");
+        int orderYear = Integer.parseInt(orderDateParts[0]);
+        int orderMonth = Integer.parseInt(orderDateParts[1]);
+        YearMonth orderYearMonth = YearMonth.of(orderYear, orderMonth);
+
+        // Compare the order date and the expiry date.
+        return cardExpiry.isAfter(orderYearMonth) && creditCardExpiry.matches("(0[1-9]|1[0-2])/\\d{2}");
     }
 
     public static boolean isValidPriceTotalInPence(List<Pizza> pizzasInOrder, int priceTotalInPence ){
@@ -34,7 +36,7 @@ public class CheckOrderUtil {
         for (Pizza pizza : pizzasInOrder) {
             sum = sum + pizza.getPriceInPence();
         }
-        return sum == priceTotalInPence;
+        return sum + 1000 == priceTotalInPence;
     }
 
     public static boolean isValidCreditCardNumber(String creditCardNumber){
@@ -56,10 +58,11 @@ public class CheckOrderUtil {
         return true;
     }
 
-    public static boolean isOpen(Restaurant restaurant){
+    public static boolean isOpen(Restaurant restaurant, LocalDate orderDate){
         List<String> openDays = restaurant.getOpeningDays();
+
         for (String day : openDays) {
-            if (today.equals(day)){
+            if (orderDate.getDayOfWeek().toString().equals(day)){
                 return true;
             }
         }

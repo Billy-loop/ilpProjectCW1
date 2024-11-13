@@ -101,7 +101,7 @@ public class ImplementUtil {
 
         //Find the Restaurant
         Restaurant restaurant = getRestaurant(order);
-        System.out.println(restaurant.getName());
+        //System.out.println(restaurant.getName());
 
         if(!CheckOrderUtil.isValidDate(orderDate)){
             order.setOrderStatus(OrderStatus.INVALID);
@@ -115,7 +115,7 @@ public class ImplementUtil {
             return order;
         }
 
-        if(!CheckOrderUtil.isValidExpiryDate(creditCardInformation.getCreditCardExpiry())){
+        if(!CheckOrderUtil.isValidExpiryDate(creditCardInformation.getCreditCardExpiry(),orderDate)){
             order.setOrderStatus(OrderStatus.INVALID);
             order.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
             return order;
@@ -151,8 +151,8 @@ public class ImplementUtil {
             return order;
         }
 
-        assert restaurant != null;
-        if(!CheckOrderUtil.isOpen(restaurant)){
+        //assert restaurant != null;
+        if(!CheckOrderUtil.isOpen(restaurant, orderDate)){
             order.setOrderStatus(OrderStatus.INVALID);
             order.setOrderValidationCode(OrderValidationCode.RESTAURANT_CLOSED);
             return order;
