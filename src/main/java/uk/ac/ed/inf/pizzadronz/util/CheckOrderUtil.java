@@ -14,21 +14,38 @@ public class CheckOrderUtil {
     }
 
     public static boolean isValidExpiryDate(String creditCardExpiry, LocalDate orderDate){
+        try {
+            // Get the date of expiry date
+            //String expiryDate = order.getCreditCardInformation().getCreditCardExpiry();
+            String[] parts = creditCardExpiry.split("/");
+            int month = Integer.parseInt(parts[0]);
+            int year = Integer.parseInt(parts[1]) + 2000;
+            YearMonth cardExpiry = YearMonth.of(year, month);
+
+            // Get the date of order date
+            String[] orderDateParts = orderDate.toString().split("-");
+            int orderYear = Integer.parseInt(orderDateParts[0]);
+            int orderMonth = Integer.parseInt(orderDateParts[1]);
+            YearMonth orderYearMonth = YearMonth.of(orderYear, orderMonth);
+            return !cardExpiry.isBefore(orderYearMonth) && creditCardExpiry.matches("(0[1-9]|1[0-2])/\\d{2}");
+        } catch (Exception e) {
+            return creditCardExpiry.matches("(0[1-9]|1[0-2])/\\d{2}");
+        }
         // Get the date of expiry date
         //String expiryDate = order.getCreditCardInformation().getCreditCardExpiry();
-        String[] parts = creditCardExpiry.split("/");
-        int month = Integer.parseInt(parts[0]);
-        int year = Integer.parseInt(parts[1]) + 2000;
-        YearMonth cardExpiry = YearMonth.of(year, month);
-
-        // Get the date of order date
-        String[] orderDateParts = orderDate.toString().split("-");
-        int orderYear = Integer.parseInt(orderDateParts[0]);
-        int orderMonth = Integer.parseInt(orderDateParts[1]);
-        YearMonth orderYearMonth = YearMonth.of(orderYear, orderMonth);
-
-        // Compare the order date and the expiry date.
-        return cardExpiry.isAfter(orderYearMonth) && creditCardExpiry.matches("(0[1-9]|1[0-2])/\\d{2}");
+//        String[] parts = creditCardExpiry.split("/");
+//        int month = Integer.parseInt(parts[0]);
+//        int year = Integer.parseInt(parts[1]) + 2000;
+//        YearMonth cardExpiry = YearMonth.of(year, month);
+//
+//        // Get the date of order date
+//        String[] orderDateParts = orderDate.toString().split("-");
+//        int orderYear = Integer.parseInt(orderDateParts[0]);
+//        int orderMonth = Integer.parseInt(orderDateParts[1]);
+//        YearMonth orderYearMonth = YearMonth.of(orderYear, orderMonth);
+//
+//        // Compare the order date and the expiry date.
+//        return !cardExpiry.isBefore(orderYearMonth) && creditCardExpiry.matches("(0[1-9]|1[0-2])/\\d{2}");
     }
 
     public static boolean isValidPriceTotalInPence(List<Pizza> pizzasInOrder, int priceTotalInPence ){
@@ -36,7 +53,7 @@ public class CheckOrderUtil {
         for (Pizza pizza : pizzasInOrder) {
             sum = sum + pizza.getPriceInPence();
         }
-        return sum + 1000 == priceTotalInPence;
+        return sum + 100 == priceTotalInPence;
     }
 
     public static boolean isValidCreditCardNumber(String creditCardNumber){
@@ -58,6 +75,12 @@ public class CheckOrderUtil {
         return true;
     }
 
+    public static boolean isValidPizza(Order order){
+
+        String regex = "R\\d+: .+$";
+        return order.getPizzasInOrder().stream().allMatch(pizza -> pizza.getName().matches(regex));
+    }
+
     public static boolean isOpen(Restaurant restaurant, LocalDate orderDate){
         List<String> openDays = restaurant.getOpeningDays();
 
@@ -69,29 +92,41 @@ public class CheckOrderUtil {
         return false;
     }
 
-    public static boolean isValidPizza(Restaurant restaurant, List<Pizza> pizzasInOrder){
-        List<Pizza> menu = restaurant.getMenu();
-        for (Pizza pizza : pizzasInOrder) {
-            for (Pizza pizzaMenu : menu) {
-                if (pizzaMenu.getName().equals(pizza.getName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public static boolean isValidPizzaPrice(Restaurant restaurant, List<Pizza> pizzasInOrder){
         List<Pizza> menu = restaurant.getMenu();
+
+        // Check each pizza in the order
         for (Pizza pizza : pizzasInOrder) {
+            boolean matchFound = false;
+
+            // Check if this pizza exists in the restaurant's menu with the same price
             for (Pizza pizzaMenu : menu) {
                 if (pizzaMenu.getName().equals(pizza.getName()) && pizzaMenu.getPriceInPence() == pizza.getPriceInPence()) {
-                    return true;
+                    matchFound = true;
+                    break;
                 }
             }
+
+            // If a pizza in the order has no match in the menu, return false
+            if (!matchFound) {
+                return false;
+            }
         }
-        return false;
+
+        // All pizzas in the order matched the menu prices
+        return true;
     }
+
+//        List<Pizza> menu = restaurant.getMenu();
+//        for (Pizza pizza : pizzasInOrder) {
+//            for (Pizza pizzaMenu : menu) {
+//                if (pizzaMenu.getName().equals(pizza.getName()) && pizzaMenu.getPriceInPence() == pizza.getPriceInPence()) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
 
 
