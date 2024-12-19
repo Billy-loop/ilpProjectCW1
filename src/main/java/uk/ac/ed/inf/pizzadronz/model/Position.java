@@ -5,11 +5,6 @@ public class Position {
     private Double lng;
     private Double lat;
 
-//    public Position(){
-//        this.lng = null;
-//        this.lat = null;
-//    }
-
     public Position(Double lng, Double lat) {
         this.lng = lng;
         this.lat = lat;
@@ -31,22 +26,21 @@ public class Position {
         this.lat = lat;
     }
 
-//    public boolean isValidPosition(){
-//        if(lat == null || lng == null){
-//            return false;
-//        }
-//        if(lat > 90 || lat < -90){
-//            return false;
-//        }
-//        if(lng > 180 || lng < -180){
-//            return false;
-//        }
-//        return true;
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Position)) return false;
+        Position other = (Position) o;
 
-//    @Override
-//    public String toString() {
-//        return "Position{lng:" + lng + ", lat:" + lat + "}";
-//    }
+        return Double.compare(this.lng, other.lng) == 0 && Double.compare(this.lat, other.lat) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+
+        long lngBits = Double.doubleToLongBits(lng);
+        long latBits = Double.doubleToLongBits(lat);
+        return (int) (lngBits ^ (lngBits >>> 32) ^ latBits ^ (latBits >>> 32));
+    }
 
 }
