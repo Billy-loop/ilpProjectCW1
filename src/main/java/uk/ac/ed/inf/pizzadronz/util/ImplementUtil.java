@@ -108,7 +108,7 @@ public class ImplementUtil {
      * @param order the order to validate
      * @return the validated order with updated status and validation code
      */
-    public static Order validateOrder(Order order) {
+    public static OrderValidationResult validateOrder(Order order) {
         String orderNo = order.getOrderNo();
         LocalDate orderDate = order.getOrderDate();
         int priceTotalInPence = order.getPriceTotalInPence();
@@ -116,57 +116,69 @@ public class ImplementUtil {
         CardInfo creditCardInformation = order.getCreditCardInformation();
 
         if (pizzasInOrder.isEmpty()) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.EMPTY_ORDER);
-            return order;
+//            order.setOrderStatus(OrderStatus.INVALID);
+//            order.setOrderValidationCode(OrderValidationCode.EMPTY_ORDER);
+            return new OrderValidationResult(OrderStatus.INVALID, OrderValidationCode.EMPTY_ORDER);
+            //return order;
         }
 
         Restaurant restaurant = getRestaurant(order);
 
         if (!CheckOrderUtil.isValidDate(orderDate)) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
-            return order;
+            //order.setOrderStatus(OrderStatus.INVALID);
+            //order.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
+            return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.EXPIRY_DATE_INVALID );
+            //return order;
         } else if (!CheckOrderUtil.isValidCVV(creditCardInformation.getCvv())) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.CVV_INVALID);
-            return order;
+            //order.setOrderStatus(OrderStatus.INVALID);
+           // order.setOrderValidationCode(OrderValidationCode.CVV_INVALID);
+            return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.CVV_INVALID );
+            //return order;
         } else if (!CheckOrderUtil.isValidExpiryDate(creditCardInformation.getCreditCardExpiry(), orderDate)) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
-            return order;
+           // order.setOrderStatus(OrderStatus.INVALID);
+           // order.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
+            return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.EXPIRY_DATE_INVALID);
+           // return order;
         } else if (!CheckOrderUtil.isValidCreditCardNumber(creditCardInformation.getCreditCardNumber())) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.CARD_NUMBER_INVALID);
-            return order;
+           // order.setOrderStatus(OrderStatus.INVALID);
+            //order.setOrderValidationCode(OrderValidationCode.CARD_NUMBER_INVALID);
+            return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.CARD_NUMBER_INVALID);
+            //return order;
         } else if (pizzasInOrder.size() > 4) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED);
-            return order;
+            //order.setOrderStatus(OrderStatus.INVALID);
+            //order.setOrderValidationCode(OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED);
+            return new OrderValidationResult(OrderStatus.INVALID, OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED);
+           // return order;
         } else if (!CheckOrderUtil.isValidPriceTotalInPence(pizzasInOrder, priceTotalInPence)) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.TOTAL_INCORRECT);
-            return order;
+           // order.setOrderStatus(OrderStatus.INVALID);
+            //order.setOrderValidationCode(OrderValidationCode.TOTAL_INCORRECT);
+            return new OrderValidationResult(OrderStatus.INVALID, OrderValidationCode.TOTAL_INCORRECT);
+            //return order;
         } else if (!CheckOrderUtil.isValidPizza(order)) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.PIZZA_NOT_DEFINED);
-            return order;
+            //order.setOrderStatus(OrderStatus.INVALID);
+            //order.setOrderValidationCode(OrderValidationCode.PIZZA_NOT_DEFINED);
+            return new OrderValidationResult(OrderStatus.INVALID, OrderValidationCode.PIZZA_NOT_DEFINED);
+            //return order;
         } else if (!CheckOrderUtil.isSameRestaurant(pizzasInOrder)) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.PIZZA_FROM_MULTIPLE_RESTAURANTS);
-            return order;
+//            order.setOrderStatus(OrderStatus.INVALID);
+//            order.setOrderValidationCode(OrderValidationCode.PIZZA_FROM_MULTIPLE_RESTAURANTS);
+            return new OrderValidationResult(OrderStatus.INVALID, OrderValidationCode.PIZZA_FROM_MULTIPLE_RESTAURANTS);
+//            return order;
         } else if (!CheckOrderUtil.isOpen(restaurant, orderDate)) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.RESTAURANT_CLOSED);
-            return order;
+//            order.setOrderStatus(OrderStatus.INVALID);
+//            order.setOrderValidationCode(OrderValidationCode.RESTAURANT_CLOSED);
+            return new OrderValidationResult(OrderStatus.INVALID, OrderValidationCode.RESTAURANT_CLOSED);
+//            return order;
         } else if (!CheckOrderUtil.isValidPizzaPrice(restaurant, pizzasInOrder)) {
-            order.setOrderStatus(OrderStatus.INVALID);
-            order.setOrderValidationCode(OrderValidationCode.PRICE_FOR_PIZZA_INVALID);
-            return order;
+//            order.setOrderStatus(OrderStatus.INVALID);
+//            order.setOrderValidationCode(OrderValidationCode.PRICE_FOR_PIZZA_INVALID);
+            return new OrderValidationResult(OrderStatus.INVALID, OrderValidationCode.PRICE_FOR_PIZZA_INVALID);
+//            return order;
         }
 
-        order.setOrderStatus(OrderStatus.VALID);
-        order.setOrderValidationCode(OrderValidationCode.NO_ERROR);
-        return order;
+//        order.setOrderStatus(OrderStatus.VALID);
+//        order.setOrderValidationCode(OrderValidationCode.NO_ERROR);
+        return new OrderValidationResult(OrderStatus.VALID, OrderValidationCode.NO_ERROR);
+//        return order;
     }
 }

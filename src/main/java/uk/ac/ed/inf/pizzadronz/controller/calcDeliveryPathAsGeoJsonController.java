@@ -23,7 +23,7 @@ public class calcDeliveryPathAsGeoJsonController {
     @PostMapping("/calcDeliveryPathAsGeoJson")
     public ResponseEntity<Map<String, Object>> calcDeliveryPathAsGeoJson(@RequestBody Order order) {
         // Validate order
-        Order validOrder = ImplementUtil.validateOrder(order);
+        OrderValidationResult validOrder = ImplementUtil.validateOrder(order);
         if (validOrder.getOrderStatus() == OrderStatus.INVALID) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
