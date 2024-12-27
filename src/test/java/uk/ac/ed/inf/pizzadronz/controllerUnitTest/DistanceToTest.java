@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import uk.ac.ed.inf.pizzadronz.Controller;
+import uk.ac.ed.inf.pizzadronz.controller.DistanceToController;
 
-@WebMvcTest(Controller.class)
+@WebMvcTest(DistanceToController.class)
 public class DistanceToTest {
     @Autowired
     private MockMvc mockMvc;
