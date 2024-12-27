@@ -12,7 +12,6 @@ import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
 public class ValidateOrderController {
     @PostMapping("/validateOrder")
     public ResponseEntity<OrderValidationResult>validateOrder(@RequestBody Order order){
-       //Order res = ImplementUtil.validateOrder(order);
         OrderValidationResult res = ImplementUtil.validateOrder(order);
        return ResponseEntity.ok(res);
     }

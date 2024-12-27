@@ -173,8 +173,6 @@ public class CalcDeliveryPathController {
             return true;
         }
 
-        // Optional: if you want to handle collinearity (o1 == 0 etc.) you can check for overlap here.
-        // For speed, if you don't care about collinear edges, omit it.
 
         return false;
     }

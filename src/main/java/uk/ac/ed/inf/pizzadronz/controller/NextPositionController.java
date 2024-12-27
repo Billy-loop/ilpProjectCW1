@@ -31,9 +31,6 @@ public class NextPositionController {
         }
         Position res = ImplementUtil.nextPosition(nextPosition);
 
-//        double radian = Math.toRadians(nextPosition.getAngle());
-//        Position res = new Position(nextPosition.getStart().getLng()+Math.cos(radian)*0.00015,
-//                nextPosition.getStart().getLat()+Math.sin(radian)*0.00015);
         return ResponseEntity.ok(res);
     }
 }
