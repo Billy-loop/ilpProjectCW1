@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ed.inf.pizzadronz.constant.OrderStatus;
 import uk.ac.ed.inf.pizzadronz.model.*;
-import uk.ac.ed.inf.pizzadronz.service.DataRetrive;
 import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
 
 import java.util.ArrayList;
@@ -16,10 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.RestController;
-
 @RestController
-public class calcDeliveryPathAsGeoJsonController {
+public class CalcDeliveryPathAsGeoJsonController {
     @PostMapping("/calcDeliveryPathAsGeoJson")
     public ResponseEntity<Map<String, Object>> calcDeliveryPathAsGeoJson(@RequestBody Order order) {
         // Validate order

@@ -121,4 +121,30 @@ public class IsInRegionTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testIsInRegion_PointOnBorder() throws Exception {
+        String requestBody = """
+    {
+      \"position\": {\"lng\": -3.192473, \"lat\": 55.946233},
+      \"region\": {
+        \"name\": \"central\",
+        \"vertices\": [
+          {\"lng\": -3.192473, \"lat\": 55.946233},
+          {\"lng\": -3.192473, \"lat\": 55.942617},
+          {\"lng\": -3.184319, \"lat\": 55.942617},
+          {\"lng\": -3.184319, \"lat\": 55.946233},
+          {\"lng\": -3.192473, \"lat\": 55.946233}
+        ]
+      }
+    }
+    """;
+
+        mockMvc.perform(post("/isInRegion")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(true)); // On the border
+    }
+
 }

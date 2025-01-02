@@ -1,7 +1,11 @@
 package uk.ac.ed.inf.pizzadronz.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import java.util.List;
 
+@Getter
+@Setter
 public class Region {
     private String name;
     private List<Position> vertices;
@@ -11,12 +15,12 @@ public class Region {
         this.vertices = vertices;
     }
 
-    public String getName() {
-        return name;
-    }
-    public List<Position> getVertices() {
-        return vertices;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//    public List<Position> getVertices() {
+//        return vertices;
+//    }
 
 
 }
