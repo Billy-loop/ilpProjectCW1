@@ -120,10 +120,11 @@ public class ImplementUtil {
 
         Restaurant restaurant = getRestaurant(order);
 
-        if (!CheckOrderUtil.isValidDate(orderDate)) {
-            return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.EXPIRY_DATE_INVALID );
+//        if (!CheckOrderUtil.isValidDate(orderDate)) {
+//            return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.EXPIRY_DATE_INVALID );
 
-        } else if (!CheckOrderUtil.isValidCVV(creditCardInformation.getCvv())) {
+//        }
+        if (!CheckOrderUtil.isValidCVV(creditCardInformation.getCvv())) {
             return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.CVV_INVALID );
 
         } else if (!CheckOrderUtil.isValidExpiryDate(creditCardInformation.getCreditCardExpiry(), orderDate)) {

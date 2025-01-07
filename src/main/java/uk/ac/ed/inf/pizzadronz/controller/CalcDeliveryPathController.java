@@ -38,9 +38,11 @@ public class CalcDeliveryPathController {
         // Get restaurant location
         Restaurant restaurant = ImplementUtil.getRestaurant(order);
         Position start = restaurant.getLocation();
+        //System.out.printf("start lng: %f, start lat: %f\n", start.getLng(), start.getLat());
 
         // A* Search
         List<Position> path = aStarSearch(start, appletonTower);
+        System.out.println(path.size());
 
         // Return the calculated path
         return path.isEmpty()
@@ -62,7 +64,7 @@ public class CalcDeliveryPathController {
         while (!openSet.isEmpty()) {
             Node current = openSet.poll();
             Position currentPos = current.getPosition();
-            System.out.printf("Polling Node: %f, %f with F: %f\n", currentPos.getLng(), currentPos.getLat(), current.getF());
+           // System.out.printf("Polling Node: %f, %f with F: %f\n", currentPos.getLng(), currentPos.getLat(), current.getF());
 
             // Arrived the goal
             if (ImplementUtil.isCloseTo(new LngLatPairRequest(currentPos, goal))) {
@@ -109,6 +111,7 @@ public class CalcDeliveryPathController {
             path.add(current);
             current = cameFrom.get(current);
         }
+        path.add(current);
         Collections.reverse(path);
         return path;
     }
