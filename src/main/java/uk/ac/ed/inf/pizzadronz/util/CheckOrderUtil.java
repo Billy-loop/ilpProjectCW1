@@ -13,15 +13,6 @@ public class CheckOrderUtil {
     // Today's day of the week as a string
     private static final String today = LocalDate.now().getDayOfWeek().toString();
 
-    /**
-     * Validates if the given order date is not in the past.
-     *
-     * @param orderDate the date of the order
-     * @return true if the order date is today or in the future, false otherwise
-     */
-    public static boolean isValidDate(LocalDate orderDate) {
-        return orderDate != null && !orderDate.isBefore(LocalDate.now());
-    }
 
     /**
      * Validates if the given credit card expiry date is valid and not expired.

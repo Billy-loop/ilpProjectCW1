@@ -27,6 +27,7 @@ public class ImplementUtil {
         return Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2));
     }
 
+
     /**
      * Determines if two geographical points are close to each other.
      *
@@ -55,6 +56,35 @@ public class ImplementUtil {
         return res;
     }
 
+
+    /**
+     * Checks if a given point lies on the line segment defined by two vertices.
+     *
+     * @param p the point to check
+     * @param v1 the first vertex of the line segment
+     * @param v2 the second vertex of the line segment
+     * @return true if the point lies on the line segment, false otherwise
+     */
+    public static boolean isOnLine(Position p, Position v1, Position v2) {
+        // Calculate the cross product (to check for collinearity)
+        double crossProduct = (p.getLat() - v1.getLat()) * (v2.getLng() - v1.getLng())
+                - (p.getLng() - v1.getLng()) * (v2.getLat() - v1.getLat());
+
+        // If crossProduct is not zero, the point is not collinear
+        if (crossProduct != 0) {
+            return false;
+        }
+
+        // Check if the point lies within the bounds of the line segment
+        boolean lngBounds = Math.min(v1.getLng(), v2.getLng()) <= p.getLng() &&
+                p.getLng() <= Math.max(v1.getLng(), v2.getLng());
+        boolean latBounds = Math.min(v1.getLat(), v2.getLat()) <= p.getLat() &&
+                p.getLat() <= Math.max(v1.getLat(), v2.getLat());
+
+        return lngBounds && latBounds;
+    }
+
+
     /**
      * Checks if a position is inside a polygon defined by a list of vertices.
      *
@@ -66,7 +96,7 @@ public class ImplementUtil {
         int intersects = 0;
         for (int i = 0, j = 1; i < vertices.size() - 1; i++, j = i + 1) {
             // Check if the point lies on the border (using collinearity and boundary check)
-            if (SemanticChecker.isOnLine(position, vertices.get(i), vertices.get(j))) {
+            if (isOnLine(position, vertices.get(i), vertices.get(j))) {
                 return true; // Point is on the border
             }
             // Check whether y of target position in the range of line
@@ -120,10 +150,6 @@ public class ImplementUtil {
 
         Restaurant restaurant = getRestaurant(order);
 
-//        if (!CheckOrderUtil.isValidDate(orderDate)) {
-//            return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.EXPIRY_DATE_INVALID );
-
-//        }
         if (!CheckOrderUtil.isValidCVV(creditCardInformation.getCvv())) {
             return new OrderValidationResult(OrderStatus.INVALID,OrderValidationCode.CVV_INVALID );
 

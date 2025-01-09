@@ -16,7 +16,7 @@ public class SemanticChecker {
      * @param lnglat1 the LngLatPairRequest object to check
      * @return true if the object and its positions are valid, false otherwise
      */
-    public static boolean checkLngLatPair(LngLatPairRequest lnglat1) {
+    public static boolean isValidLngLatPair(LngLatPairRequest lnglat1) {
         if (lnglat1 == null) {
             return false;
         }
@@ -52,32 +52,6 @@ public class SemanticChecker {
         return true;
     }
 
-    /**
-     * Checks if a given point lies on the line segment defined by two vertices.
-     *
-     * @param p the point to check
-     * @param v1 the first vertex of the line segment
-     * @param v2 the second vertex of the line segment
-     * @return true if the point lies on the line segment, false otherwise
-     */
-    public static boolean isOnLine(Position p, Position v1, Position v2) {
-        // Calculate the cross product (to check for collinearity)
-        double crossProduct = (p.getLat() - v1.getLat()) * (v2.getLng() - v1.getLng())
-                - (p.getLng() - v1.getLng()) * (v2.getLat() - v1.getLat());
-
-        // If crossProduct is not zero, the point is not collinear
-        if (crossProduct != 0) {
-            return false;
-        }
-
-        // Check if the point lies within the bounds of the line segment
-        boolean lngBounds = Math.min(v1.getLng(), v2.getLng()) <= p.getLng() &&
-                p.getLng() <= Math.max(v1.getLng(), v2.getLng());
-        boolean latBounds = Math.min(v1.getLat(), v2.getLat()) <= p.getLat() &&
-                p.getLat() <= Math.max(v1.getLat(), v2.getLat());
-
-        return lngBounds && latBounds;
-    }
 
     /**
      * Checks if the given list of vertices is valid.
@@ -85,7 +59,7 @@ public class SemanticChecker {
      * @param vertices the list of vertices to check
      * @return true if the list is valid, false otherwise
      */
-    public static boolean checkVertices(List<Position> vertices) {
+    public static boolean isValidVertices(List<Position> vertices) {
         if (vertices == null) {
             return false;
         }

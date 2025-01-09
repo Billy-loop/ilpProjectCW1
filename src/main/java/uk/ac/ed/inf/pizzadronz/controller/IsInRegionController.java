@@ -6,10 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ed.inf.pizzadronz.model.IsInRegionRequest;
-import uk.ac.ed.inf.pizzadronz.model.Position;
 import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
 import uk.ac.ed.inf.pizzadronz.util.SemanticChecker;
-import java.util.List;
 
 @RestController
 public class IsInRegionController {
@@ -32,7 +30,7 @@ public class IsInRegionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(!SemanticChecker.checkVertices(request.getRegion().getVertices())){
+        if(!SemanticChecker.isValidVertices(request.getRegion().getVertices())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 

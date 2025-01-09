@@ -47,7 +47,7 @@ public class CalcDeliveryPathController {
 
         // A* Search
         List<Position> path = aStarSearch(start, appletonTower);
-        System.out.println(path.size());
+        //System.out.println(path.size());
 
         // Return the calculated path
         return path.isEmpty()

@@ -18,7 +18,7 @@ public class IsCloseToController {
         }
 
         //If checkLngLat is true, the if below will not run, vice visa
-        if (!SemanticChecker.checkLngLatPair(lnglat1)) {
+        if (!SemanticChecker.isValidLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
