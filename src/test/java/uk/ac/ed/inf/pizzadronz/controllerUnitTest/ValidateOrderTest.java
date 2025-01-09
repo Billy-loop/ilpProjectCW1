@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import uk.ac.ed.inf.pizzadronz.controller.ValidateOrderController;
 import uk.ac.ed.inf.pizzadronz.model.Order;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

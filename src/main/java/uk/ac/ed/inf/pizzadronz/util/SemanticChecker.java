@@ -1,7 +1,6 @@
 package uk.ac.ed.inf.pizzadronz.util;
 
-import uk.ac.ed.inf.pizzadronz.model.LngLatPairRequest;
-import uk.ac.ed.inf.pizzadronz.model.Position;
+import uk.ac.ed.inf.pizzadronz.model.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -128,4 +127,39 @@ public class SemanticChecker {
         }
         return true;
     }
+
+
+    public static boolean isValidOrder(Order order) {
+        if (order == null) {
+            return false; // Order itself is null
+        }
+
+        // Check if priceTotalInPence is not null and is a positive value
+        Integer priceTotalInPence = order.getPriceTotalInPence();
+        if (priceTotalInPence == null || priceTotalInPence <= 0) {
+            return false; // Invalid price
+        }
+
+        // Check if pizzasInOrder is not null and contains at least one pizza
+        List<Pizza> pizzasInOrder = order.getPizzasInOrder();
+        if (pizzasInOrder == null || pizzasInOrder.isEmpty()) {
+            return false; // No pizzas in the order
+        }
+
+        // Check if creditCardInformation is not null and contains valid data
+        CardInfo creditCardInformation = order.getCreditCardInformation();
+        if (creditCardInformation == null) {
+            return false; // Missing credit card information
+        }
+
+        // Additional checks on the credit card (optional)
+        if (creditCardInformation.getCreditCardNumber() == null ||
+                creditCardInformation.getCreditCardExpiry() == null ||
+                creditCardInformation.getCvv() == null) {
+            return false; // Incomplete credit card information
+        }
+
+        return true; // The order is valid
+    }
+
 }
