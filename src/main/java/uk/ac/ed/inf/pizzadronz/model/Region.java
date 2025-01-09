@@ -15,12 +15,4 @@ public class Region {
         this.vertices = vertices;
     }
 
-//    public String getName() {
-//        return name;
-//    }
-//    public List<Position> getVertices() {
-//        return vertices;
-//    }
-
-
 }

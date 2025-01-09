@@ -13,17 +13,5 @@ public class Pizza {
         this.name = name;
         this.priceInPence = priceInPence;
     }
-//
-//    public String getName() {
-//        return name;
-//    }
-//    public int getPriceInPence() {
-//        return priceInPence;
-//    }
-//    public void setPriceInPence(int priceInPence) {
-//        this.priceInPence = priceInPence;
-//    }
-//    public void setName(String name) {
-//        this.name = name;
-//    }
+
 }

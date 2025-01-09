@@ -15,9 +15,7 @@ import uk.ac.ed.inf.pizzadronz.util.SemanticChecker;
 public class ValidateOrderController {
     @PostMapping("/validateOrder")
     public ResponseEntity<OrderValidationResult>validateOrder(@RequestBody Order order){
-        if (!SemanticChecker.isValidOrder(order)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+
         OrderValidationResult res = ImplementUtil.validateOrder(order);
        return ResponseEntity.ok(res);
     }

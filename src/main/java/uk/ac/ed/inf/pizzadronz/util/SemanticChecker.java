@@ -134,12 +134,6 @@ public class SemanticChecker {
             return false; // Order itself is null
         }
 
-        // Check if priceTotalInPence is not null and is a positive value
-        Integer priceTotalInPence = order.getPriceTotalInPence();
-        if (priceTotalInPence == null || priceTotalInPence <= 0) {
-            return false; // Invalid price
-        }
-
         // Check if pizzasInOrder is not null and contains at least one pizza
         List<Pizza> pizzasInOrder = order.getPizzasInOrder();
         if (pizzasInOrder == null || pizzasInOrder.isEmpty()) {
@@ -152,7 +146,7 @@ public class SemanticChecker {
             return false; // Missing credit card information
         }
 
-        // Additional checks on the credit card (optional)
+        // Additional checks on the credit card
         if (creditCardInformation.getCreditCardNumber() == null ||
                 creditCardInformation.getCreditCardExpiry() == null ||
                 creditCardInformation.getCvv() == null) {

@@ -20,19 +20,4 @@ public class Restaurant {
         this.openingDays = openingDays;
     }
 
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public Position getLocation() {
-//        return location;
-//    }
-//
-//    public List<Pizza> getMenu() {
-//        return menu;
-//    }
-//
-//    public List<String> getOpeningDays() {
-//        return openingDays;
-//    }
 }
