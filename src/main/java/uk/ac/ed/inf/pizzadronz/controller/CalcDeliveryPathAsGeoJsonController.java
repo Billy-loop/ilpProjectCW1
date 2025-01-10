@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ed.inf.pizzadronz.constant.OrderStatus;
 import uk.ac.ed.inf.pizzadronz.model.*;
 import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
-import uk.ac.ed.inf.pizzadronz.util.SemanticChecker;
+import uk.ac.ed.inf.pizzadronz.util.SynSemCheck;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class CalcDeliveryPathAsGeoJsonController {
     @PostMapping("/calcDeliveryPathAsGeoJson")
     public ResponseEntity<Map<String, Object>> calcDeliveryPathAsGeoJson(@RequestBody Order order) {
-        if (!SemanticChecker.isValidOrder(order)){
+        if (!SynSemCheck.isValidOrder(order)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         // Validate order

@@ -13,7 +13,7 @@ public class DistanceToController {
     @PostMapping("/distanceTo")
     public ResponseEntity<Double> distanceTo(@RequestBody LngLatPairRequest lnglat1){
 
-        if (!SemanticChecker.isValidLngLatPair(lnglat1)) {
+        if (!SynSemCheck.isValidLngLatPair(lnglat1)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 

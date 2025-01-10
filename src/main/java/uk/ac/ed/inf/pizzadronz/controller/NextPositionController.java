@@ -18,7 +18,7 @@ public class NextPositionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(!SemanticChecker.isValidPosition(nextPosition.getStart())){
+        if(!SynSemCheck.isValidPosition(nextPosition.getStart())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 

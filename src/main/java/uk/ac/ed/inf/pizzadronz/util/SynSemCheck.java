@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Utility class for performing semantic checks on various objects.
  */
-public class SemanticChecker {
+public class SynSemCheck {
 
     /**
      * Checks if the given LngLatPairRequest object is valid.

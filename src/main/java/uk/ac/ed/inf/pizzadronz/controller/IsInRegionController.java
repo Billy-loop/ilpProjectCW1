@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ed.inf.pizzadronz.model.IsInRegionRequest;
 import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
-import uk.ac.ed.inf.pizzadronz.util.SemanticChecker;
+import uk.ac.ed.inf.pizzadronz.util.SynSemCheck;
 
 @RestController
 public class IsInRegionController {
@@ -22,7 +22,7 @@ public class IsInRegionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(!SemanticChecker.isValidPosition(request.getPosition())){
+        if(!SynSemCheck.isValidPosition(request.getPosition())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -30,7 +30,7 @@ public class IsInRegionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(!SemanticChecker.isValidVertices(request.getRegion().getVertices())){
+        if(!SynSemCheck.isValidVertices(request.getRegion().getVertices())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -38,7 +38,7 @@ public class IsInRegionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        if(SemanticChecker.isOnStraightLine(request.getRegion().getVertices())){
+        if(SynSemCheck.isOnStraightLine(request.getRegion().getVertices())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         boolean inside = ImplementUtil.isInPolygon(request.getPosition(),request.getRegion().getVertices());

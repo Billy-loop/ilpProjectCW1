@@ -9,7 +9,7 @@ import uk.ac.ed.inf.pizzadronz.constant.OrderStatus;
 import uk.ac.ed.inf.pizzadronz.model.*;
 import uk.ac.ed.inf.pizzadronz.service.DataRetrive;
 import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
-import uk.ac.ed.inf.pizzadronz.util.SemanticChecker;
+import uk.ac.ed.inf.pizzadronz.util.SynSemCheck;
 
 import java.util.*;
 
@@ -31,7 +31,7 @@ public class CalcDeliveryPathController {
     @PostMapping("/calcDeliveryPath")
     public ResponseEntity<List<Position>> calcDeliveryPath(@RequestBody Order order) {
 
-        if (!SemanticChecker.isValidOrder(order)){
+        if (!SynSemCheck.isValidOrder(order)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         // Validate the order
