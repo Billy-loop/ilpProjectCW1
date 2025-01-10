@@ -15,6 +15,7 @@ import uk.ac.ed.inf.pizzadronz.util.ImplementUtil;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +28,40 @@ public class CalcDeliveryPathTest  {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private void performAndValidate(String validOrderRequest) throws Exception {
+        mockMvc.perform(post("/calcDeliveryPath")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validOrderRequest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").isNumber()) // Verifies that a list is returned
+                .andExpect(jsonPath("$[0].lng").isNumber())
+                .andExpect(jsonPath("$[0].lat").isNumber())
+                .andExpect(result -> {
+                    // Parse response JSON into a generic list of maps
+                    String responseBody = result.getResponse().getContentAsString();
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<Map<String, Double>> positions = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Double>>>() {});
+
+                    // Validate each position
+                    for (Map<String, Double> positionMap : positions) {
+                        double lng = positionMap.get("lng");
+                        double lat = positionMap.get("lat");
+                        Position position = new Position(lng, lat);
+
+                        // Assert the position is outside all no-fly zones
+                        boolean isInNoFlyZone = CalcDeliveryPathController.noFlyZones.stream()
+                                .anyMatch(zone -> ImplementUtil.isInPolygon(position, zone.getVertices()));
+                        assertFalse(isInNoFlyZone, "A position in the path is inside a no-fly zone.");
+                    }
+
+                    // Validate the last position is close to Appleton Tower
+                    Map<String, Double> lastPositionMap = positions.get(positions.size() - 1);
+                    Position lastPosition = new Position(lastPositionMap.get("lng"), lastPositionMap.get("lat"));
+                    boolean isCloseToAppletonTower = ImplementUtil.isCloseTo(new LngLatPairRequest(lastPosition, APPLETON_TOWER));
+                    assertTrue(isCloseToAppletonTower, "The last position is not close to Appleton Tower.");
+                });
+    }
 
     @Test
     public void testCalcDeliveryPath_ValidOrder_R1() throws Exception {
@@ -55,31 +90,7 @@ public class CalcDeliveryPathTest  {
                    }
        \s""";
 
-        mockMvc.perform(post("/calcDeliveryPath")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(validOrderRequest))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").isNumber()) // Verifies that a list is returned
-                .andExpect(jsonPath("$[0].lng").isNumber())
-                .andExpect(jsonPath("$[0].lat").isNumber())
-                .andExpect(result -> {
-                    // Parse response JSON into a generic list of maps
-                    String responseBody = result.getResponse().getContentAsString();
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    List<Map<String, Double>> positions = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Double>>>() {});
-
-                    // Extract the last position
-                    Map<String, Double> lastPositionMap = positions.get(positions.size() - 1);
-                    double lastLng = lastPositionMap.get("lng");
-                    double lastLat = lastPositionMap.get("lat");
-
-                    // Create a Position object for the last position
-                    Position lastPosition = new Position(lastLng, lastLat);
-
-                    // Assert the last position is close to Appleton Tower
-                    boolean isCloseToAppletonTower = ImplementUtil.isCloseTo(new LngLatPairRequest(lastPosition, APPLETON_TOWER));
-                    assertTrue(isCloseToAppletonTower, "The last position is not close to Appleton Tower.");
-                });
+       performAndValidate(validOrderRequest);
     }
 
     @Test
@@ -109,31 +120,7 @@ public class CalcDeliveryPathTest  {
                     }
                \s""";
 
-        mockMvc.perform(post("/calcDeliveryPath")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(validOrderRequest))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").isNumber()) // Verifies that a list is returned
-                .andExpect(jsonPath("$[0].lng").isNumber())
-                .andExpect(jsonPath("$[0].lat").isNumber())
-                .andExpect(result -> {
-                    // Parse response JSON into a generic list of maps
-                    String responseBody = result.getResponse().getContentAsString();
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    List<Map<String, Double>> positions = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Double>>>() {});
-
-                    // Extract the last position
-                    Map<String, Double> lastPositionMap = positions.get(positions.size() - 1);
-                    double lastLng = lastPositionMap.get("lng");
-                    double lastLat = lastPositionMap.get("lat");
-
-                    // Create a Position object for the last position
-                    Position lastPosition = new Position(lastLng, lastLat);
-
-                    // Assert the last position is close to Appleton Tower
-                    boolean isCloseToAppletonTower = ImplementUtil.isCloseTo(new LngLatPairRequest(lastPosition, APPLETON_TOWER));
-                    assertTrue(isCloseToAppletonTower, "The last position is not close to Appleton Tower.");
-                });
+        performAndValidate(validOrderRequest);
     }
 
     @Test
@@ -163,31 +150,7 @@ public class CalcDeliveryPathTest  {
                    }
        \s""";
 
-        mockMvc.perform(post("/calcDeliveryPath")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(validOrderRequest))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").isNumber()) // Verifies that a list is returned
-                .andExpect(jsonPath("$[0].lng").isNumber())
-                .andExpect(jsonPath("$[0].lat").isNumber())
-                .andExpect(result -> {
-                    // Parse response JSON into a generic list of maps
-                    String responseBody = result.getResponse().getContentAsString();
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    List<Map<String, Double>> positions = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Double>>>() {});
-
-                    // Extract the last position
-                    Map<String, Double> lastPositionMap = positions.get(positions.size() - 1);
-                    double lastLng = lastPositionMap.get("lng");
-                    double lastLat = lastPositionMap.get("lat");
-
-                    // Create a Position object for the last position
-                    Position lastPosition = new Position(lastLng, lastLat);
-
-                    // Assert the last position is close to Appleton Tower
-                    boolean isCloseToAppletonTower = ImplementUtil.isCloseTo(new LngLatPairRequest(lastPosition, APPLETON_TOWER));
-                    assertTrue(isCloseToAppletonTower, "The last position is not close to Appleton Tower.");
-                });
+        performAndValidate(validOrderRequest);
     }
 
     @Test
@@ -217,13 +180,7 @@ public class CalcDeliveryPathTest  {
                    }
        \s""";
 
-        mockMvc.perform(post("/calcDeliveryPath")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(validOrderRequest))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").isNumber()) // Verifies that a list is returned
-                .andExpect(jsonPath("$[0].lng").isNumber())
-                .andExpect(jsonPath("$[0].lat").isNumber());
+        performAndValidate(validOrderRequest);
     }
 
     @Test
@@ -253,31 +210,7 @@ public class CalcDeliveryPathTest  {
                    }
        \s""";
 
-        mockMvc.perform(post("/calcDeliveryPath")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(validOrderRequest))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").isNumber()) // Verifies that a list is returned
-                .andExpect(jsonPath("$[0].lng").isNumber())
-                .andExpect(jsonPath("$[0].lat").isNumber())
-                .andExpect(result -> {
-                    // Parse response JSON into a generic list of maps
-                    String responseBody = result.getResponse().getContentAsString();
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    List<Map<String, Double>> positions = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Double>>>() {});
-
-                    // Extract the last position
-                    Map<String, Double> lastPositionMap = positions.get(positions.size() - 1);
-                    double lastLng = lastPositionMap.get("lng");
-                    double lastLat = lastPositionMap.get("lat");
-
-                    // Create a Position object for the last position
-                    Position lastPosition = new Position(lastLng, lastLat);
-
-                    // Assert the last position is close to Appleton Tower
-                    boolean isCloseToAppletonTower = ImplementUtil.isCloseTo(new LngLatPairRequest(lastPosition, APPLETON_TOWER));
-                    assertTrue(isCloseToAppletonTower, "The last position is not close to Appleton Tower.");
-                });
+        performAndValidate(validOrderRequest);
     }
 
     @Test
@@ -307,31 +240,7 @@ public class CalcDeliveryPathTest  {
                    }
        \s""";
 
-        mockMvc.perform(post("/calcDeliveryPath")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(validOrderRequest))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").isNumber()) // Verifies that a list is returned
-                .andExpect(jsonPath("$[0].lng").isNumber())
-                .andExpect(jsonPath("$[0].lat").isNumber())
-                .andExpect(result -> {
-                    // Parse response JSON into a generic list of maps
-                    String responseBody = result.getResponse().getContentAsString();
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    List<Map<String, Double>> positions = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Double>>>() {});
-
-                    // Extract the last position
-                    Map<String, Double> lastPositionMap = positions.get(positions.size() - 1);
-                    double lastLng = lastPositionMap.get("lng");
-                    double lastLat = lastPositionMap.get("lat");
-
-                    // Create a Position object for the last position
-                    Position lastPosition = new Position(lastLng, lastLat);
-
-                    // Assert the last position is close to Appleton Tower
-                    boolean isCloseToAppletonTower = ImplementUtil.isCloseTo(new LngLatPairRequest(lastPosition, APPLETON_TOWER));
-                    assertTrue(isCloseToAppletonTower, "The last position is not close to Appleton Tower.");
-                });
+        performAndValidate(validOrderRequest);
     }
 
     @Test
@@ -361,31 +270,7 @@ public class CalcDeliveryPathTest  {
                    }
        \s""";
 
-        mockMvc.perform(post("/calcDeliveryPath")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(validOrderRequest))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").isNumber()) // Verifies that a list is returned
-                .andExpect(jsonPath("$[0].lng").isNumber())
-                .andExpect(jsonPath("$[0].lat").isNumber())
-                .andExpect(result -> {
-                    // Parse response JSON into a generic list of maps
-                    String responseBody = result.getResponse().getContentAsString();
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    List<Map<String, Double>> positions = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, Double>>>() {});
-
-                    // Extract the last position
-                    Map<String, Double> lastPositionMap = positions.get(positions.size() - 1);
-                    double lastLng = lastPositionMap.get("lng");
-                    double lastLat = lastPositionMap.get("lat");
-
-                    // Create a Position object for the last position
-                    Position lastPosition = new Position(lastLng, lastLat);
-
-                    // Assert the last position is close to Appleton Tower
-                    boolean isCloseToAppletonTower = ImplementUtil.isCloseTo(new LngLatPairRequest(lastPosition, APPLETON_TOWER));
-                    assertTrue(isCloseToAppletonTower, "The last position is not close to Appleton Tower.");
-                });
+        performAndValidate(validOrderRequest);
     }
 
 
