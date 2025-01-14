@@ -16,8 +16,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller class responsible for converting a computed drone flight path into GeoJSON format.
+ */
 @RestController
 public class CalcDeliveryPathAsGeoJsonController {
+
+    /**
+     * Receives an {@link Order}, validates it, invokes the path calculation, and returns
+     * the result in GeoJSON format if successful.
+     *
+     * @param order The incoming {@link Order} object containing pizzas, credit card info, etc.
+     * @return A {@link ResponseEntity} containing a GeoJSON representation of the flight path
+     *         or an appropriate HTTP error status if validation or path retrieval fails.
+     */
     @PostMapping("/calcDeliveryPathAsGeoJson")
     public ResponseEntity<Map<String, Object>> calcDeliveryPathAsGeoJson(@RequestBody Order order) {
         if (!SynSemCheck.isValidOrder(order)){
@@ -47,6 +59,13 @@ public class CalcDeliveryPathAsGeoJsonController {
         return ResponseEntity.ok(geoJson);
     }
 
+    /**
+     * Converts a list of {@link Position} objects into a GeoJSON FeatureCollection containing
+     * a single LineString feature.
+     *
+     * @param positions The list of positions forming the drone's flight path.
+     * @return A {@link Map} structured as a GeoJSON FeatureCollection.
+     */
     private Map<String, Object> convertToGeoJson(List<Position> positions) {
         // GeoJSON FeatureCollection structure
         Map<String, Object> geoJson = new HashMap<>();
@@ -80,6 +99,7 @@ public class CalcDeliveryPathAsGeoJsonController {
         List<Map<String, Object>> features = new ArrayList<>();
         features.add(feature);
         geoJson.put("features", features);
+
         return geoJson;
     }
 
