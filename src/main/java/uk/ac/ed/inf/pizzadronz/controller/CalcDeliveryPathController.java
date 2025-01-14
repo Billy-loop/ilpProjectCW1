@@ -13,6 +13,9 @@ import uk.ac.ed.inf.pizzadronz.util.SynSemCheck;
 
 import java.util.*;
 
+/**
+ * Controller class responsible for handling delivery path calculation requests.
+ */
 @RestController
 public class CalcDeliveryPathController {
 
@@ -28,6 +31,14 @@ public class CalcDeliveryPathController {
     private static final Region centreArea = DataRetrive.getCentralArea();
 
 
+    /**
+     * Handles the HTTP POST request to calculate a delivery path for the provided Order.
+     * Validates the Order before attempting to compute the path.
+     *
+     * @param order The Order object containing necessary information (restaurant, pizzas, credit card, etc.).
+     * @return A {@link ResponseEntity} containing either an HTTP 400 status if invalid
+     *         or a list of {@link Position} objects representing the flight path if successful.
+     */
     @PostMapping("/calcDeliveryPath")
     public ResponseEntity<List<Position>> calcDeliveryPath(@RequestBody Order order) {
 
@@ -55,6 +66,13 @@ public class CalcDeliveryPathController {
                 : ResponseEntity.ok(path);
     }
 
+    /**
+     * Implements the A* algorithm to calculate the shortest path between two points.
+     *
+     * @param start The starting position.
+     * @param goal The goal position.
+     * @return A list of positions representing the calculated path.
+     */
     private List<Position> aStarSearch(Position start, Position goal) {
 
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getF));
@@ -106,10 +124,26 @@ public class CalcDeliveryPathController {
         return new ArrayList<>();
     }
 
+
+    /**
+     * Calculates the heuristic value using Euclidean distance.
+     *
+     * @param current The current position.
+     * @param goal The goal position.
+     * @return The heuristic distance between the current and goal positions.
+     */
     private double heuristic(Position current, Position goal) {
         return ImplementUtil.distanceTo(new LngLatPairRequest(current, goal));
     }
 
+
+    /**
+     * Reconstructs the path by tracing back through the 'cameFrom' map once the goal is reached.
+     *
+     * @param cameFrom A map storing the immediate predecessor for each visited position.
+     * @param current  The current position at (or near) the goal.
+     * @return A list of {@link Position} representing the reconstructed path, from start to goal.
+     */
     private List<Position> reconstructPath(Map<Position, Position> cameFrom, Position current) {
         List<Position> path = new ArrayList<>();
         while (cameFrom.containsKey(current)) {
@@ -121,6 +155,14 @@ public class CalcDeliveryPathController {
         return path;
     }
 
+
+    /**
+     * Checks if a move from current to neighbor exits the central area.
+     *
+     * @param neighbor The next position to move to.
+     * @param current  The current position.
+     * @return true if moving to neighbor leaves the central area; false otherwise.
+     */
     private boolean leaveCentreArea(Position neighbor, Position current) {
         return ImplementUtil.isInPolygon(current, centreArea.getVertices()) &&
                 !ImplementUtil.isInPolygon(neighbor, centreArea.getVertices());
@@ -128,7 +170,12 @@ public class CalcDeliveryPathController {
 
 
     /**
-     * Checks if the line segment from currentPos to targetPos crosses any of the No-Fly-Zone edges.
+     * Verifies whether the straight line from currentPos to targetPos intersects any no-fly zone edges.
+     *
+     * @param currentPos The current position.
+     * @param targetPos  The position being considered.
+     * @param noFlyZones The list of regions where flight is not allowed.
+     * @return true if the path segment intersects a no-fly zone edge; false otherwise.
      */
     public static boolean isPathCrossingNoFlyZone(Position currentPos,
                                                   Position targetPos,
@@ -149,8 +196,15 @@ public class CalcDeliveryPathController {
         return false;
     }
 
+
     /**
-     * Determines if the two line segments p1->p2 and q1->q2 intersect.
+     * Checks if two line segments p1->p2 and q1->q2 intersect.
+     *
+     * @param p1 The start position of the first line segment.
+     * @param p2 The end position of the first line segment.
+     * @param q1 The start position of the second line segment.
+     * @param q2 The end position of the second line segment.
+     * @return true if the segments intersect; false otherwise.
      */
     private static boolean segmentsIntersect(Position p1, Position p2, Position q1, Position q2) {
         // 1) Quick bounding-box check (inline for efficiency)
@@ -180,16 +234,18 @@ public class CalcDeliveryPathController {
         if (o1 != o2 && o3 != o4) {
             return true;
         }
-
-
         return false;
     }
 
     /**
-     * Returns:
-     *  0 if p1->p2->p3 are collinear,
-     * +1 if p1->p2->p3 turn counter-clockwise,
-     * -1 if p1->p2->p3 turn clockwise.
+     * Determines the orientation of the triplet (p1->p2->p3).
+     * @param x1 x-coordinate of p1
+     * @param y1 y-coordinate of p1
+     * @param x2 x-coordinate of p2
+     * @param y2 y-coordinate of p2
+     * @param x3 x-coordinate of p3
+     * @param y3 y-coordinate of p3
+     * @return 0 if collinear, +1 if counter-clockwise, -1 if clockwise
      */
     private static int orientation(double x1, double y1,
                                    double x2, double y2,
