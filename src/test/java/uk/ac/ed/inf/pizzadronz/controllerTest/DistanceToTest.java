@@ -1,4 +1,4 @@
-package uk.ac.ed.inf.pizzadronz.controllerUnitTest;
+package uk.ac.ed.inf.pizzadronz.controllerTest;
 
 // Import statements
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

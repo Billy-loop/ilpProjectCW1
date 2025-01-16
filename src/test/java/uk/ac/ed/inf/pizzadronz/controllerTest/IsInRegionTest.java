@@ -1,4 +1,4 @@
-package uk.ac.ed.inf.pizzadronz.controllerUnitTest;
+package uk.ac.ed.inf.pizzadronz.controllerTest;
 
 
 import org.junit.jupiter.api.Test;

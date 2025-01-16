@@ -1,4 +1,4 @@
-package uk.ac.ed.inf.pizzadronz.controllerUnitTest;
+package uk.ac.ed.inf.pizzadronz.controllerTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

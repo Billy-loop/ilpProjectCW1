@@ -1,4 +1,4 @@
-package uk.ac.ed.inf.pizzadronz.controllerUnitTest;
+package uk.ac.ed.inf.pizzadronz.controllerTest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
